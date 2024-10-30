@@ -3,11 +3,8 @@
 on:
   pull_request:
     branches:
+<<<<<<< HEAD
       - staging
-# on:
-#   pull_request:
-#     branches:
-#       - staging
 
 # jobs:
 #   deploy:
@@ -20,6 +17,7 @@ on:
 #       - name: Log in to Docker Hub
 #         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
+<<<<<<< HEAD
 #       - name: Build and push Docker image
 #         run: |
 #           docker build -t learn-actions .
@@ -36,3 +34,22 @@ on:
 
 #       - name: Log out of Docker Hub
 #         run: docker logout
+=======
+      - name: Build and push Docker image
+        run: |
+          # Build the Docker image
+          docker build -t learn-actions .
+          # Tag the image for staging
+          docker tag learn-actions ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
+          # Push the image to Docker Hub
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
+
+      - name: Deploy to Staging
+        # Only run this step if the pull request is merged
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
+        env:
+          deploy_url: ${{ secrets.STAGING_DEPLOY_KEY }}
+        run: |
+          # Trigger the deployment using the deploy URL
+          curl "$deploy_url"
+>>>>>>> 7de00da (add)
