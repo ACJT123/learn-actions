@@ -3,7 +3,7 @@ name: Deploy to Staging
 on:
   pull_request:
     branches:
-      - staging
+      - staging  # This triggers on pull requests to staging
 
 jobs:
   deploy:
@@ -18,14 +18,18 @@ jobs:
 
       - name: Build and push Docker image
         run: |
+          # Build the Docker image
           docker build -t learn-actions .
+          # Tag the image for staging
           docker tag learn-actions ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
+          # Push the image to Docker Hub
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
 
       - name: Deploy to Staging
-        # Only run this step if the branch is staging
-        if: github.ref == 'refs/heads/staging'
+        # Only run this step if the pull request is merged
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
         env:
           deploy_url: ${{ secrets.STAGING_DEPLOY_KEY }}
         run: |
+          # Trigger the deployment using the deploy URL
           curl "$deploy_url"
