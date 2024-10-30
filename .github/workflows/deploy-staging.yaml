@@ -1,9 +1,10 @@
 # name: Deploy to Staging
 
-# on:
-#   pull_request:
-#     branches:
-#       - staging
+on:
+  pull_request:
+    branches:
+<<<<<<< HEAD
+      - staging
 
 # jobs:
 #   deploy:
@@ -16,6 +17,7 @@
 #       - name: Log in to Docker Hub
 #         run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
 
+<<<<<<< HEAD
 #       - name: Build and push Docker image
 #         run: |
 #           docker build -t learn-actions .
@@ -32,3 +34,19 @@
 
 #       - name: Log out of Docker Hub
 #         run: docker logout
+=======
+      - name: Build and push Docker image
+        run: |
+          docker build -t learn-actions .
+          docker tag learn-actions ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
+
+      - name: Deploy to Staging
+      # echo the github.ref to see what the value is
+        run: echo ${{ github.ref }}
+        if: github.ref == 'refs/heads/staging'
+        env:
+          deploy_url: ${{ secrets.STAGING_DEPLOY_KEY }}
+        run: |
+          curl "$deploy_url"
+>>>>>>> 7de00da (add)
