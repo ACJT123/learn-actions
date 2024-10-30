@@ -23,7 +23,8 @@ jobs:
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/learn-actions:staging
 
       - name: Deploy to Staging
-        # Only run this step if the branch is staging
+      # echo the github.ref to see what the value is
+        run: echo ${{ github.ref }}
         if: github.ref == 'refs/heads/staging'
         env:
           deploy_url: ${{ secrets.STAGING_DEPLOY_KEY }}
