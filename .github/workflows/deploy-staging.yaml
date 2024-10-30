@@ -1,0 +1,22 @@
+name: Deploy to Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Deploy to Staging
+        # Only run this step if the branch is staging
+        if: github.ref == 'refs/heads/staging'
+        env:
+          deploy_url: ${{ secrets.STAGING_DEPLOY_KEY }}
+        run: |
+          curl "$deploy_url"
